@@ -1,4 +1,4 @@
-# submodule of gbt
+# helper to make chains for llm interactions
 
 
 
