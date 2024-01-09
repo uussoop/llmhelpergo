@@ -1,4 +1,4 @@
-package prompts
+package llmhelpergo
 
 var SummarySystemPrompt = `you are the best AI assistant who is a specialized litterature and summerization . 
 

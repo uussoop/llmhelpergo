@@ -1,4 +1,4 @@
-package utils
+package llmhelpergo
 
 type Message struct {
 	Role    string  `json:"role"`

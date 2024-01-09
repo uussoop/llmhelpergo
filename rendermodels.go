@@ -1,4 +1,4 @@
-package prompts
+package llmhelpergo
 
 type GenericInput struct {
 	Input string `json:"input"`

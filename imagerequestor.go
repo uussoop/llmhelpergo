@@ -1,4 +1,4 @@
-package generalimage
+package llmhelpergo
 
 import (
 	"bytes"
@@ -7,7 +7,6 @@ import (
 	"io"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/uussoop/llmmodels-go/llmmodels/utils"
 
 	"net/http"
 	"os"
@@ -25,7 +24,7 @@ type GeneralImageLlm struct {
 type imageCompletionRequest struct {
 	Model string `json:"model"`
 
-	Messages utils.ImageMessages `json:"messages"`
+	Messages ImageMessages `json:"messages"`
 }
 
 func (l GeneralImageLlm) Predict() (*string, error) {
@@ -38,12 +37,12 @@ func (l GeneralImageLlm) Predict() (*string, error) {
 	body := imageCompletionRequest{
 		Model: l.Model,
 
-		Messages: utils.ImageMessages{
-			utils.ImageMessage{
+		Messages: ImageMessages{
+			ImageMessage{
 				Role: "user",
-				Content: []utils.Content{
+				Content: []Content{
 					{Type: "text", Text: &l.Prompt},
-					{Type: "image_url", ImageURL: &utils.ImageURL{URL: l.Image}},
+					{Type: "image_url", ImageURL: &ImageURL{URL: l.Image}},
 				},
 			},
 		},
@@ -68,7 +67,7 @@ func (l GeneralImageLlm) Predict() (*string, error) {
 	}
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+key)
-	var responseParsed utils.CompletionResponse
+	var responseParsed CompletionResponse
 	client := &http.Client{Timeout: 0}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -92,25 +91,25 @@ func (l GeneralImageLlm) Predict() (*string, error) {
 	return responseParsed.Choices[0].Message.Content, nil
 }
 
-func (l GeneralImageLlm) GetMessages() *utils.Messages {
+func (l GeneralImageLlm) GetMessages() *Messages {
 	return nil
 }
 
-func (l GeneralImageLlm) ReplaceMessages(m *utils.Messages) {
+func (l GeneralImageLlm) ReplaceMessages(m *Messages) {
 
 }
-func (l GeneralImageLlm) AddMessage(m utils.Message) {
+func (l GeneralImageLlm) AddMessage(m Message) {
 
 }
 
 func (l GeneralImageLlm) ReplacePrompt(prompt string) {
 
 }
-func (l GeneralImageLlm) GetHistoryMessages() *[]utils.Message {
+func (l GeneralImageLlm) GetHistoryMessages() *[]Message {
 
 	return nil
 }
-func (l GeneralImageLlm) AddHistoryMessage(m utils.Message) {
+func (l GeneralImageLlm) AddHistoryMessage(m Message) {
 
 }
 func (l GeneralImageLlm) ClearHistoryMessages() {

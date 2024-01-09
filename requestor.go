@@ -1,4 +1,4 @@
-package general
+package llmhelpergo
 
 import (
 	"bytes"
@@ -7,16 +7,14 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/uussoop/llmmodels-go/llmmodels/utils"
-
 	"net/http"
 	"os"
 )
 
 type GeneralLlm struct {
 	SystemPrompt    string
-	Messages        *utils.Messages
-	HistoryMessages *[]utils.Message
+	Messages        *Messages
+	HistoryMessages *[]Message
 	URL             string
 
 	Model string
@@ -25,8 +23,8 @@ type GeneralLlm struct {
 type completionRequest struct {
 	Model string `json:"model"`
 
-	Temperature float64        `json:"temperature"`
-	Messages    utils.Messages `json:"messages"`
+	Temperature float64  `json:"temperature"`
+	Messages    Messages `json:"messages"`
 
 	Stream bool `json:"stream"`
 }
@@ -40,7 +38,7 @@ func (l *GeneralLlm) Predict() (*string, error) {
 	if l.Model == "" {
 		l.Model = "gpt-3.5-turbo"
 	}
-	m := utils.Messages{{Role: "system", Content: &l.SystemPrompt}}
+	m := Messages{{Role: "system", Content: &l.SystemPrompt}}
 	if l.Messages != nil {
 
 		m = append(m, *l.Messages...)
@@ -73,7 +71,7 @@ func (l *GeneralLlm) Predict() (*string, error) {
 	}
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+key)
-	var responseParsed utils.CompletionResponse
+	var responseParsed CompletionResponse
 	client := &http.Client{Timeout: 0}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -97,17 +95,17 @@ func (l *GeneralLlm) Predict() (*string, error) {
 	return responseParsed.Choices[0].Message.Content, nil
 }
 
-func (l *GeneralLlm) GetMessages() *utils.Messages {
+func (l *GeneralLlm) GetMessages() *Messages {
 	return l.Messages
 }
 
-func (l *GeneralLlm) ReplaceMessages(m *utils.Messages) {
+func (l *GeneralLlm) ReplaceMessages(m *Messages) {
 	l.Messages = m
 
 }
-func (l *GeneralLlm) AddMessage(m utils.Message) {
+func (l *GeneralLlm) AddMessage(m Message) {
 	if l.Messages == nil {
-		l.Messages = &utils.Messages{}
+		l.Messages = &Messages{}
 	}
 	appendedMessages := append(*l.Messages, m)
 	l.Messages = &appendedMessages
@@ -124,16 +122,16 @@ func (l *GeneralLlm) ChangeModel(model string) {
 	l.Model = model
 
 }
-func (l *GeneralLlm) GetHistoryMessages() *[]utils.Message {
+func (l *GeneralLlm) GetHistoryMessages() *[]Message {
 	if l.HistoryMessages == nil {
-		l.HistoryMessages = &[]utils.Message{}
+		l.HistoryMessages = &[]Message{}
 	}
 
 	return l.HistoryMessages
 }
-func (l *GeneralLlm) AddHistoryMessage(m utils.Message) {
+func (l *GeneralLlm) AddHistoryMessage(m Message) {
 	if l.HistoryMessages == nil {
-		l.HistoryMessages = &[]utils.Message{}
+		l.HistoryMessages = &[]Message{}
 	}
 	appendedMessages := append(*l.HistoryMessages, m)
 	l.HistoryMessages = &appendedMessages

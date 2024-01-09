@@ -4,26 +4,23 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/uussoop/llmmodels-go/llmmodels"
-
-	"github.com/uussoop/llmmodels-go/llmmodels/agents/sample"
-	"github.com/uussoop/llmmodels-go/llmmodels/llm/general"
+	"github.com/uussoop/llmhelpergo"
 )
 
 func main() {
 
 	os.Setenv("OPENAI_KEY", "")
 	message := "hello world"
-	llm := &general.GeneralLlm{
+	llm := &llmhelpergo.GeneralLlm{
 		SystemPrompt: "you are an ai",
 		Messages:     nil,
 		URL:          "https://api.openai.com/v1/chat/completions",
 		Model:        "gpt-4",
 	}
-	chain := llmmodels.Chain(&message, llm, 450)
-	chain.Use(sample.SampleAgent)
-	chain.Use(sample.SampleAgent2)
-	chain.Use(sample.SampleAgent3)
+	chain := llmhelpergo.Chain(&message, llm, 450)
+	chain.Use(llmhelpergo.SampleAgent)
+	chain.Use(llmhelpergo.SampleAgent2)
+	chain.Use(llmhelpergo.SampleAgent3)
 	res, err := chain.Predict()
 
 	fmt.Println(llm.SystemPrompt)

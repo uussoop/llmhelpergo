@@ -1,14 +1,10 @@
-package llmmodels
+package llmhelpergo
 
 import (
-	"github.com/uussoop/llmmodels-go/llmmodels/llm/general"
-	"github.com/uussoop/llmmodels-go/llmmodels/prompts"
-	"github.com/uussoop/llmmodels-go/llmmodels/utils"
-
 	log "github.com/sirupsen/logrus"
 )
 
-var HistoryInsert func(*[]utils.Message) (err error)
+var HistoryInsert func(*[]Message) (err error)
 var QaInsert func(question, answer *string) error
 var QaRead func(question *string) (*string, *string, error)
 var llmImpl Llm
@@ -44,14 +40,14 @@ func (c *chain) Predict() (*string, error) {
 
 	for _, f := range c.Pipes {
 
-		(*c.Llm).AddHistoryMessage(utils.Message{Role: "user", Content: c.Input})
+		(*c.Llm).AddHistoryMessage(Message{Role: "user", Content: c.Input})
 		r, err := f(c.Input, c.Llm)
 		if err != nil {
 
 			return c.Response, err
 		}
 		if r != nil {
-			messageLength, _ := utils.CountTokens(r)
+			messageLength, _ := CountTokens(r)
 
 			if messageLength > c.InputTokenLimit {
 				summarized, err := requestSummarization(r, nil)
@@ -65,7 +61,7 @@ func (c *chain) Predict() (*string, error) {
 		}
 		c.Input = r
 		c.Response = r
-		(*c.Llm).AddHistoryMessage(utils.Message{Role: "assistant", Content: c.Response})
+		(*c.Llm).AddHistoryMessage(Message{Role: "assistant", Content: c.Response})
 	}
 
 	c.Pipes = nil
@@ -90,21 +86,21 @@ func (c *chain) Save() {
 
 type Llm interface {
 	Predict() (*string, error)
-	GetMessages() *utils.Messages
-	ReplaceMessages(*utils.Messages)
-	AddMessage(utils.Message)
+	GetMessages() *Messages
+	ReplaceMessages(*Messages)
+	AddMessage(Message)
 	ChangePrompt(prompt string)
 	ChangeModel(model string)
-	AddHistoryMessage(m utils.Message)
-	GetHistoryMessages() *[]utils.Message
+	AddHistoryMessage(m Message)
+	GetHistoryMessages() *[]Message
 	ClearHistoryMessages()
 	ClearMessages()
 }
 
 func requestSummarization(aiResponse *string, llm *Llm) (*string, error) {
-	summarizerLlm := general.GeneralLlm{
-		SystemPrompt: prompts.SummarySystemPrompt,
-		Messages:     &utils.Messages{{Role: "user", Content: aiResponse}},
+	summarizerLlm := GeneralLlm{
+		SystemPrompt: SummarySystemPrompt,
+		Messages:     &Messages{{Role: "user", Content: aiResponse}},
 		Model:        "gpt-3.5-turbo",
 	}
 	aiResponse, err := summarizerLlm.Predict()

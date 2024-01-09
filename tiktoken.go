@@ -1,4 +1,4 @@
-package utils
+package llmhelpergo
 
 import (
 	"github.com/pkoukk/tiktoken-go"

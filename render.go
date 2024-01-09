@@ -1,4 +1,4 @@
-package utils
+package llmhelpergo
 
 import (
 	"bytes"

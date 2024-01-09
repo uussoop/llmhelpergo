@@ -1,4 +1,4 @@
-module github.com/uussoop/llmmodels-go
+module github.com/uussoop/llmhelpergo
 
 go 1.20
 
