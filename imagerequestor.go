@@ -27,7 +27,7 @@ type imageCompletionRequest struct {
 	Messages ImageMessages `json:"messages"`
 }
 
-func (l GeneralImageLlm) Predict() (*string, error) {
+func (l *GeneralImageLlm) Predict() (*string, error) {
 	key := os.Getenv("OPENAI_KEY")
 	if key == "" {
 
@@ -91,27 +91,32 @@ func (l GeneralImageLlm) Predict() (*string, error) {
 	return responseParsed.Choices[0].Message.Content, nil
 }
 
-func (l GeneralImageLlm) GetMessages() *Messages {
+func (l *GeneralImageLlm) GetMessages() *Messages {
 	return nil
 }
 
-func (l GeneralImageLlm) ReplaceMessages(m *Messages) {
+func (l *GeneralImageLlm) ReplaceMessages(m *Messages) {
 
 }
-func (l GeneralImageLlm) AddMessage(m Message) {
+func (l *GeneralImageLlm) AddMessage(m Message) {
 
 }
 
-func (l GeneralImageLlm) ReplacePrompt(prompt string) {
+func (l *GeneralImageLlm) ReplacePrompt(prompt string) {
 
 }
-func (l GeneralImageLlm) GetHistoryMessages() *[]Message {
+func (l *GeneralImageLlm) GetHistoryMessages() *[]Message {
 
 	return nil
 }
-func (l GeneralImageLlm) AddHistoryMessage(m Message) {
+func (l *GeneralImageLlm) AddHistoryMessage(m Message) {
 
 }
-func (l GeneralImageLlm) ClearHistoryMessages() {
+func (l *GeneralImageLlm) ClearHistoryMessages() {
+
+}
+
+func (l *GeneralImageLlm) ChangeModel(model string) {
+	l.Model = model
 
 }

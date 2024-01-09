@@ -17,6 +17,7 @@ type chain struct {
 	InputTokenLimit int
 	Pipes           []func(Response *string, llm *Llm) (*string, error)
 }
+type ChainType chain
 
 // returns a pointer to a chain so you can use the llm and input and response with all messages elsewhere too
 func Chain(Input *string, Llm Llm, InputTokenLimit int) *chain {
