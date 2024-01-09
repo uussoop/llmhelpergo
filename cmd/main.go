@@ -17,6 +17,7 @@ func main() {
 	llm := &general.GeneralLlm{
 		SystemPrompt: "you are an ai",
 		Messages:     nil,
+		URL:          "https://api.openai.com/v1/chat/completions",
 		Model:        "gpt-4",
 	}
 	chain := llmmodels.Chain(&message, llm, 450)
@@ -24,6 +25,7 @@ func main() {
 	chain.Use(sample.SampleAgent2)
 	chain.Use(sample.SampleAgent3)
 	res, err := chain.Predict()
+
 	fmt.Println(llm.SystemPrompt)
 	if err != nil {
 		panic(err)

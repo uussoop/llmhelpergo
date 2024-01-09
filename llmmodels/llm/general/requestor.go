@@ -13,17 +13,15 @@ import (
 	"os"
 )
 
-// General meaning god of death in japanese Type A model
-
 type GeneralLlm struct {
 	SystemPrompt    string
 	Messages        *utils.Messages
 	HistoryMessages *[]utils.Message
+	URL             string
 
 	Model string
 }
 
-// Request struct
 type completionRequest struct {
 	Model string `json:"model"`
 
@@ -31,26 +29,6 @@ type completionRequest struct {
 	Messages    utils.Messages `json:"messages"`
 
 	Stream bool `json:"stream"`
-}
-
-type ChoicesResponse struct {
-	Index        int           `json:"index"`
-	Message      utils.Message `json:"message"`
-	FinishReason string        `json:"finish_reason"`
-}
-
-// Response struct
-type completionResponse struct {
-	ID      string            `json:"id"`
-	Object  string            `json:"object"`
-	Created int               `json:"created"`
-	Model   string            `json:"model"`
-	Choices []ChoicesResponse `json:"choices"`
-	Usage   struct {
-		PromptTokens     int `json:"prompt_tokens"`
-		CompletionTokens int `json:"completion_tokens"`
-		TotalTokens      int `json:"total_tokens"`
-	} `json:"usage"`
 }
 
 func (l *GeneralLlm) Predict() (*string, error) {
@@ -86,7 +64,7 @@ func (l *GeneralLlm) Predict() (*string, error) {
 	bodyReader := bytes.NewReader(jsonBytes)
 	req, err := http.NewRequest(
 		http.MethodPost,
-		"https://api.openai.com/v1/chat/completions",
+		l.URL,
 		bodyReader,
 	)
 	if err != nil {
@@ -95,7 +73,7 @@ func (l *GeneralLlm) Predict() (*string, error) {
 	}
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+key)
-	var responseParsed completionResponse
+	var responseParsed utils.CompletionResponse
 	client := &http.Client{Timeout: 0}
 	resp, err := client.Do(req)
 	if err != nil {

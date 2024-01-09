@@ -28,7 +28,8 @@ func Chain(Input *string, Llm Llm, InputTokenLimit int) *chain {
 	if InputTokenLimit == 0 {
 		InputTokenLimit = 450
 	}
-	return &chain{Input: Input, Llm: &llmImpl}
+
+	return &chain{Input: Input, Llm: &llmImpl, InputTokenLimit: InputTokenLimit}
 }
 func (c *chain) Init() {
 
@@ -51,6 +52,7 @@ func (c *chain) Predict() (*string, error) {
 		}
 		if r != nil {
 			messageLength, _ := utils.CountTokens(r)
+
 			if messageLength > c.InputTokenLimit {
 				summarized, err := requestSummarization(r, nil)
 				if err != nil {
