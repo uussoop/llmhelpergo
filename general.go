@@ -20,24 +20,28 @@ type chain struct {
 type ChainType chain
 
 // returns a pointer to a chain so you can use the llm and input and response with all messages elsewhere too
-func Chain(Input *string, Llm Llm, InputTokenLimit int) *chain {
+func Chain(Input *string, Llm Llm, InputTokenLimit int) *ChainType {
 	llmImpl = Llm
 	if InputTokenLimit == 0 {
 		InputTokenLimit = 450
 	}
-
-	return &chain{Input: Input, Llm: &llmImpl, InputTokenLimit: InputTokenLimit}
+	var ct ChainType
+	ct.Input = Input
+	ct.Llm = &Llm
+	ct.InputTokenLimit = InputTokenLimit
+	return &ct
 }
-func (c *chain) Init() {
 
-}
-func (c *chain) Use(f func(Response *string, llm *Llm) (*string, error)) {
+// func (c *ChainType) Init() {
+
+// }
+func (c *ChainType) Use(f func(Response *string, llm *Llm) (*string, error)) {
 	c.Pipes = append(c.Pipes, f)
 
 }
 
 // this will initiate the chain with its middlewares and in the end all middlewares get clensed
-func (c *chain) Predict() (*string, error) {
+func (c *ChainType) Predict() (*string, error) {
 
 	for _, f := range c.Pipes {
 
@@ -71,7 +75,7 @@ func (c *chain) Predict() (*string, error) {
 
 	return c.Response, nil
 }
-func (c *chain) Save() {
+func (c *ChainType) Save() {
 
 	if HistoryInsert == nil {
 		log.Debug("error saving history function not specified.")
